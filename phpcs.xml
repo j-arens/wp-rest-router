@@ -1,0 +1,4 @@
+<ruleset name="wp-rest-router">
+    <file>./src</file>
+    <rule ref="PSR12"></rule>
+</ruleset>

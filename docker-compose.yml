@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+
+  db:
+    image: mysql:5.7
+    container_name: wp-rest-router-mysql
+    restart: always
+    environment:
+      MYSQL_DATABASE: 'wp-rest-router'
+      MYSQL_ROOT_USER: 'root'
+      MYSQL_ROOT_PASSWORD: 'root'
+
+  wordpress:
+    depends_on:
+      - db
+    build:
+      context: .
+      dockerfile: ./test/integration/container/Dockerfile
+    container_name: wp-rest-router-wordpress
+    restart: always
+    ports:
+      - '8150:80'
+    volumes:
+      - ./src:/var/www/html/wp-content/plugins/wp-rest-router/src
+      - ./vendor:/var/www/html/wp-content/plugins/wp-rest-router/vendor
+      - ./test/integration/container/index.php:/var/www/html/wp-content/plugins/wp-rest-router/index.php
+    environment:
+      WP_DB_HOST: 'db:3306'
+      WP_DB_NAME: 'wp-rest-router'
+      WP_DB_USER: 'root'
+      WP_DB_PASS: 'root'
+      WP_ADMIN_USER: 'admin'
+      WP_ADMIN_PASS: 'z'
+      WP_URL: 'http://localhost:8150'
