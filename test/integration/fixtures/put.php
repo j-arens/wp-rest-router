@@ -4,8 +4,8 @@ use Downshift\WordPress\Rest\Router;
 
 add_action('rest_api_init', function () {
     $router = new Router();
-    $router->get('lol', function (WP_REST_Request $req, WP_REST_Response $res) {
-        $res->set_data(['simple-get' => true]);
+    $router->put('lol', function (WP_REST_Request $req, WP_REST_Response $res) {
+        $res->set_data(['put' => true]);
         return $res;
     });
     $route = $router->routes()[0];

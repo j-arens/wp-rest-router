@@ -23,7 +23,7 @@ function loadFixture(string $fixture)
 function client(): Client
 {
     return new Client([
-        'base_uri' => CONT_URL,
+        'base_uri' => CONT_URL . '/wp-json/wp-rest-router/',
         'http_errors' => false,
     ]);
 }

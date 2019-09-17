@@ -20,7 +20,7 @@ class Foo
 class Bar {
     public function get(WP_REST_Request $req, WP_REST_Response $res)
     {
-        $res->set_data(['get-with-resolved-controller' => true]);
+        $res->set_data(['route-with-resolved-controller' => true]);
         return $res;
     }
 }

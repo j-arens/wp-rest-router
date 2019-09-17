@@ -79,6 +79,29 @@ class Router extends AbstractRouter implements ScopeableRouterInterface
     /**
      * @return array
      */
+    public function routes(): array
+    {
+        return array_map(function (array $route) {
+            $cb = $route['args']['callback'];
+            if (isset($this->middlewares) && count($this->middlewares)) {
+                $stack = new MiddlewareStack($this->middlewares);
+                $route['args']['callback'] = $this->tryCatch(
+                    $this->provideResponse(
+                        $stack->apply($cb)
+                    )
+                );
+            } else {
+                $route['args']['callback'] = $this->tryCatch(
+                    $this->provideResponse($cb)
+                );
+            }
+            return $route;
+        }, $this->routesToArray());
+    }
+
+    /**
+     * @return array
+     */
     protected function routesToArray(): array
     {
         $resolver = $this->getResolver();
@@ -97,8 +120,8 @@ class Router extends AbstractRouter implements ScopeableRouterInterface
      */
     protected function scopedRoutesToArray(): array
     {
-        return array_reduce($this->scopes, function (array $acc, ScopedRouter $router) {
-            return array_merge($acc, $router->routes());
+        return array_reduce($this->scopes, function (array $acc, ScopedRouter $scoped) {
+            return array_merge($acc, $scoped->routes());
         }, []);
     }
 }

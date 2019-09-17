@@ -28,10 +28,7 @@ trait CallbackWrappers
                 return new WP_Error(
                     'rest_error',
                     'caught error while handling REST request',
-                    [
-                        'status' => $data['data']['status'] ?? 500,
-                        'data' => $data,
-                    ]
+                    $data
                 );
             }
         };

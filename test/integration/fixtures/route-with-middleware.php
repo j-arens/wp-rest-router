@@ -9,7 +9,7 @@ add_action('rest_api_init', function () {
         $next();
     });
     $router->get('lol', function (WP_REST_Request $req, WP_REST_Response $res) {
-        $res->set_data(['get-with-middleware' => true]);
+        $res->set_data(['route-with-middleware' => true]);
         return $res;
     });
     $route = $router->routes()[0];

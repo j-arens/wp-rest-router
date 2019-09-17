@@ -68,6 +68,31 @@ class ScopedRouter extends AbstractRouter
     }
 
     /**
+     * @return array
+     */
+    public function routes(): array
+    {
+        $resolver = $this->getResolver();
+
+        $routes = array_map(function (Route $route) use ($resolver) {
+            if (is_callable($resolver)) {
+                $route->setResolver($resolver);
+            }
+            return $route->toArray();
+        }, $this->routes);
+
+        // apply middleware that belongs to this scope only
+        return array_map(function (array $route) {
+            $cb = $route['args']['callback'];
+            if (isset($this->middlewares) && count($this->middlewares)) {
+                $stack = new MiddlewareStack($this->middlewares);
+                $route['args']['callback'] = $stack->apply($cb);
+            }
+            return $route;
+        }, $routes);
+    }
+
+    /**
      * @param string $path
      * @return string
      */
@@ -77,19 +102,5 @@ class ScopedRouter extends AbstractRouter
             return $this->scope;
         }
         return "{$this->scope}/$path";
-    }
-
-    /**
-     * @return array
-     */
-    protected function routesToArray(): array
-    {
-        $resolver = $this->getResolver();
-        return array_map(function (Route $route) use ($resolver) {
-            if (is_callable($resolver)) {
-                $route->setResolver($resolver);
-            }
-            return $route->toArray();
-        }, $this->routes);
     }
 }

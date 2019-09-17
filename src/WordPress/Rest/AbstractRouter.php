@@ -73,38 +73,10 @@ abstract class AbstractRouter implements RouterInterface
     abstract public function delete(string $route, $endpoint): Route;
 
     /**
-     *
-     */
-    abstract protected function routesToArray(): array;
-
-    /**
      * {@inheritdoc}
      */
     public function use(callable $middleware)
     {
         $this->middlewares[] = $middleware;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function routes(): array
-    {
-        return array_map(function (array $route) {
-            $cb = $route['args']['callback'];
-            if (isset($this->middlewares) && count($this->middlewares)) {
-                $stack = new MiddlewareStack($this->middlewares);
-                $route['args']['callback'] = $this->tryCatch(
-                    $this->provideResponse(
-                        $stack->apply($cb)
-                    )
-                );
-            } else {
-                $route['args']['callback'] = $this->tryCatch(
-                    $this->provideResponse($cb)
-                );
-            }
-            return $route;
-        }, $this->routesToArray());
     }
 }
