@@ -4,6 +4,22 @@ set -euo pipefail
 shopt -s expand_aliases
 alias wp="/usr/local/bin/wp --allow-root --path=/var/www/html"
 
+install_composer() {
+  EXPECTED_SIGNATURE="$(wget -q -O - https://composer.github.io/installer.sig)"
+  php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+  ACTUAL_SIGNATURE="$(php -r "echo hash_file('sha384', 'composer-setup.php');")"
+
+  if [ "$EXPECTED_SIGNATURE" != "$ACTUAL_SIGNATURE" ]
+  then
+      >&2 echo 'ERROR: Invalid installer signature'
+      rm composer-setup.php
+      exit 1
+  fi
+
+  php composer-setup.php --quiet
+  rm composer-setup.php
+}
+
 install_wordpress() {
   if [ ! -s /var/www/html/wp-config.php ]; then
     printf "downloading wordpress...\n"
@@ -67,6 +83,7 @@ configure_apache() {
   apachectl -D FOREGROUND
 }
 
+install_composer
 install_wordpress
 write_htaccess
 configure_apache

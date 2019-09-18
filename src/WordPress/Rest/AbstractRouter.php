@@ -75,7 +75,7 @@ abstract class AbstractRouter implements RouterInterface
     /**
      * {@inheritdoc}
      */
-    public function use(callable $middleware)
+    public function use(callable $middleware): void
     {
         $this->middlewares[] = $middleware;
     }

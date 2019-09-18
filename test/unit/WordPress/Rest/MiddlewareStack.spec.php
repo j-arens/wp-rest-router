@@ -1,7 +1,7 @@
 <?php
 
 use Kahlan\Plugin\Double;
-use Downshift\Wordpress\Rest\MiddlewareStack;
+use Downshift\WordPress\Rest\MiddlewareStack;
 
 describe('MiddlewareStack', function () {
     describe('->apply', function () {

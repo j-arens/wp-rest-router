@@ -7,7 +7,7 @@ trait UsesResolver
     /**
      *
      */
-    public function setResolver(callable $resolver)
+    public function setResolver(callable $resolver): void
     {
         $this->resolver = $resolver;
     }

@@ -7,5 +7,5 @@ interface UsesMiddlewareInterface
     /**
      * @param callable $middleware
      */
-    public function use(callable $middleware);
+    public function use(callable $middleware): void;
 }

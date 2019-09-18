@@ -1,0 +1,56 @@
+name: CI
+
+on: [push]
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: install php
+        uses: shivammathur/setup-php@master
+        with:
+          php-version: 7.1
+
+  lint:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: install deps
+        run: composer install
+      - name: php lint
+        run: composer lint
+
+  analyse:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: install deps
+        run: composer install
+      - name: php analyse
+        run: composer analyse
+
+  unit-tests:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: install deps
+        run: composer install
+      - name: php unit tests
+        run: composer test:unit
+
+  integration-tests:
+    needs: [setup]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: install deps
+        run: composer install
+      - name: start containers
+        run: docker-compose up -d
+      - name: php integration tests
+        run: |
+          sleep 30
+          docker exec wp-rest-router-wordpress php composer.phar --working-dir=/var/www/html/wp-content/plugins/wp-rest-router run integration

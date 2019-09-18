@@ -23,7 +23,9 @@ services:
       - '8150:80'
     volumes:
       - ./src:/var/www/html/wp-content/plugins/wp-rest-router/src
+      - ./test/integration:/var/www/html/wp-content/plugins/wp-rest-router/test/integration
       - ./vendor:/var/www/html/wp-content/plugins/wp-rest-router/vendor
+      - ./composer.json:/var/www/html/wp-content/plugins/wp-rest-router/composer.json
       - ./test/integration/container/index.php:/var/www/html/wp-content/plugins/wp-rest-router/index.php
     environment:
       WP_DB_HOST: 'db:3306'

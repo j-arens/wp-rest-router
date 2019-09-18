@@ -1,4 +1,4 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.1
 FROM php:$PHP_VERSION-apache
 
 COPY ./test/integration/container/entrypoint.sh /usr/local/downshift/entrypoint.sh
@@ -9,7 +9,7 @@ RUN docker-php-ext-install mysqli \
   && mv wp-cli.phar /usr/local/bin/wp \
   && chmod +x -R /usr/local/bin/wp /usr/local/downshift \
   && apt-get update \
-  && apt-get install mariadb-client -y
+  && apt-get install mariadb-client wget -y
 
 EXPOSE 80
 
