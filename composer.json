@@ -13,14 +13,16 @@
     }
   },
   "scripts": {
-    "analyse": "phpstan analyse src",
-    "analyse:fix-stubs": "PHPStan\\WordPress\\Composer\\FixWpStubs::php73Polyfill",
+    "analyse": [
+      "PHPStan\\WordPress\\Composer\\FixWpStubs::php73Polyfill",
+      "phpstan analyse src"
+    ],
     "docker:up": "docker-compose up -d",
     "docker:down": "docker-compose down",
     "lint": "phpcs",
-    "test:unit": "kahlan --config=test/unit/kahlan.php --spec=test/unit --reporter=verbose",
-    "test:int": "kahlan --config=test/integration/kahlan.php --spec=test/integration/spec --reporter=verbose",
-    "test": "composer test:unit && composer test:int"
+    "integration": "kahlan --config=test/integration/kahlan.php --spec=test/integration/spec --reporter=verbose",
+    "test:integration": "docker exec wp-rest-router-wordpress php composer.phar --working-dir=/var/www/html/wp-content/plugins/wp-rest-router run integration",
+    "test:unit": "kahlan --config=test/unit/kahlan.php --spec=test/unit --reporter=verbose"
   },
   "require-dev": {
     "kahlan/kahlan": "^4.6",
@@ -30,5 +32,6 @@
     "guzzlehttp/guzzle": "^6.3"
   },
   "require": {
+    "php": ">=7.0"
   }
 }

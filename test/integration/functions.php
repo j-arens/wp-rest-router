@@ -3,20 +3,20 @@
 use GuzzleHttp\Client;
 
 const CONT_NAME = 'wp-rest-router-wordpress';
-const CONT_URL = 'http://localhost:8150';
+const CONT_URL = 'http://localhost:80';
 const FIX_DIR = __DIR__ . '/fixtures';
 const PLUGIN_DIR = '/var/www/html/wp-content/plugins/wp-rest-router';
 
 function loadFixture(string $fixture)
 {
-    $path = FIX_DIR . "/$fixture.php";
-    if (!file_exists($path)) {
+    $source = FIX_DIR . "/$fixture.php";
+    if (!file_exists($source)) {
         throw new Exception("fixture $fixture not found");
     }
-    $cmd = "docker cp $path " . CONT_NAME . ':' . PLUGIN_DIR . "/fixture.php 2>&1";
-    exec($cmd, $output, $status);
-    if ($status !== 0) {
-        throw new Exception("failed to copy fixture $fixture to container: $output");
+
+    $dest = PLUGIN_DIR . '/fixture.php';
+    if (!copy($source, $dest)) {
+        throw new Exception("failed to copy fixture $fixture");
     }
 }
 

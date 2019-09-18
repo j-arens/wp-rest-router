@@ -1,0 +1,40 @@
+steps:
+
+  - id: 'composer-install'
+    name: 'composer'
+    args: ['install']
+
+  - id: 'lint'
+    name: 'composer'
+    waitFor: ['composer-install']
+    entrypoint: 'composer'
+    args: ['lint']
+
+  - id: 'analyse'
+    name: 'composer'
+    waitFor: ['composer-install']
+    entrypoint: 'composer'
+    args: ['analyse']
+
+  - id: 'unit-tests'
+    name: 'composer'
+    waitFor: ['composer-install']
+    entrypoint: 'composer'
+    args: ['test:unit']
+
+  - id: 'docker-compose'
+    name: 'docker/compose'
+    args: ['up', '-d']
+
+  - id: 'integration-tests'
+    name: 'gcr.io/cloud-builders/docker'
+    waitFor: ['docker-compose']
+    args: [
+        'exec',
+        'wp-rest-router-wordpress',
+        'php',
+        'composer.phar',
+        '--working-dir=/var/www/html/wp-content/plugins/wp-rest-router',
+        'run',
+        'integration'
+      ]
