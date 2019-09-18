@@ -6,7 +6,8 @@ jobs:
   install:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v1
+      - name: checkout
+        uses: actions/checkout@v1
       - name: composer install
         uses: docker://circleci/php:7.1-cli
         run: composer install --no-interaction --prefer-source
