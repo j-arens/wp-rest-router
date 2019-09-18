@@ -1,0 +1,43 @@
+name: CI
+
+on: [push]
+
+jobs:
+  install:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: composer install
+        uses: docker://circleci/php:7.1-cli
+        run: composer install --no-interaction --prefer-source
+  
+  lint:
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: lint
+        uses: docker://circleci/php:7.1-cli
+        run: composer lint
+
+  analyse:
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: analyse
+        uses: docker://circleci/php:7.1-cli
+        run: composer analyse
+
+  test:
+    needs: [install]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - name: unit-test
+        uses: docker://circleci/php:7.1-cli
+        run: composer test:unit
+      - name: docker-compose
+        run: docker-compose up -d
+      - name: integration-test
+        run: docker exec wp-rest-router-wordpress php composer.phar --working-dir=/var/www/html/wp-content/plugins/wp-rest-router run integration

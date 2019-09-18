@@ -7,7 +7,7 @@ interface UsesResolverInterface
     /**
      *
      */
-    public function setResolver(callable $resolver);
+    public function setResolver(callable $resolver): void;
 
     /**
      *

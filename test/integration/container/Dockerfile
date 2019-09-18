@@ -1,5 +1,7 @@
-ARG PHP_VERSION=7.3
+ARG PHP_VERSION=7.1
 FROM php:$PHP_VERSION-apache
+
+COPY ./test/integration/container/entrypoint.sh /usr/local/downshift/entrypoint.sh
 
 RUN docker-php-ext-install mysqli \
   && mv /usr/local/etc/php/php.ini-production /usr/local/etc/php/php.ini \
