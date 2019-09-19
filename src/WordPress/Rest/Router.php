@@ -2,12 +2,31 @@
 
 namespace Downshift\WordPress\Rest;
 
-class Router extends AbstractRouter implements ScopeableRouterInterface
+class Router extends AbstractRouter implements ScopeableRouterInterface, RegistersRoutesInterface
 {
     /**
      * @var array
      */
     protected $scopes = [];
+
+    /**
+     * @var string
+     */
+    protected $namespace;
+
+    /**
+     * @var DispatchListener
+     */
+    protected $dispatchListener;
+
+    /**
+     * @param string $namespace
+     */
+    public function __construct(string $namespace)
+    {
+        $this->namespace = $namespace;
+        $this->dispatchListener = new DispatchListener();
+    }
 
     /**
      * {@inheritdoc}
@@ -100,6 +119,23 @@ class Router extends AbstractRouter implements ScopeableRouterInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function listen(): void
+    {
+        if (!did_action('rest_api_init')) {
+            add_action('rest_api_init', function () {
+                $this->registerRoutes();
+            });
+        } else {
+            if ($this->dispatchListener->dispatched()) {
+                throw new RestException('listen needs to be called before rest requests are served');
+            }
+            $this->registerRoutes();
+        }
+    }
+
+    /**
      * @return array
      */
     protected function routesToArray(): array
@@ -123,5 +159,16 @@ class Router extends AbstractRouter implements ScopeableRouterInterface
         return array_reduce($this->scopes, function (array $acc, ScopedRouter $scoped) {
             return array_merge($acc, $scoped->routes());
         }, []);
+    }
+
+    /**
+     * Collects routes and registers them with WordPress
+     * @return void
+     */
+    protected function registerRoutes(): void
+    {
+        foreach ($this->routes() as $route) {
+            register_rest_route($this->namespace, $route['path'], $route['args']);
+        }
     }
 }

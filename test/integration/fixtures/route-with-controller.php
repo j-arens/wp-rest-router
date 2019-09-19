@@ -10,9 +10,6 @@ class Controller {
     }
 }
 
-add_action('rest_api_init', function () {
-    $router = new Router();
-    $router->get('lol', 'Controller@endpoint');
-    $route = $router->routes()[0];
-    register_rest_route('wp-rest-router', $route['path'], $route['args']);
-});
+$router = new Router('wp-rest-router');
+$router->get('lol', 'Controller@endpoint');
+$router->listen();

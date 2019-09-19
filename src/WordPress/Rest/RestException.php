@@ -40,7 +40,7 @@ class RestException extends Exception
     {
         $type = get_class($this);
         $msg = $this->message;
-        $data = print_r($this->data, true);
+        $data = empty($this->data) ? '' : print_r($this->data, true);
         return "[$type]: $msg\n$data";
     }
 }

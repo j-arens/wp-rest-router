@@ -4,7 +4,7 @@ use Downshift\WordPress\Rest\ScopedRouter;
 
 describe('ScopedRouter', function () {
     beforeEach(function () {
-        $this->instance = new ScopedRouter('lol');
+        $this->instance = new ScopedRouter('lol-scope');
     });
 
     describe('->routes', function () {
