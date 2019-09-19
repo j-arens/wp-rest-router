@@ -25,12 +25,9 @@ class Bar {
     }
 }
 
-add_action('rest_api_init', function () {
-    $router = new Router();
-    $router->setResolver(function (string $classname) {
-        return new $classname(new Bar());
-    });
-    $router->get('lol', 'Foo@get');
-    $route = $router->routes()[0];
-    register_rest_route('wp-rest-router', $route['path'], $route['args']);
+$router = new Router('wp-rest-router');
+$router->setResolver(function (string $classname) {
+    return new $classname(new Bar());
 });
+$router->get('lol', 'Foo@get');
+$router->listen();

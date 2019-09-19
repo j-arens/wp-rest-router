@@ -2,10 +2,11 @@
 
 use Downshift\WordPress\Rest\Router;
 use Downshift\WordPress\Rest\ScopedRouter;
+use Downshift\WordPress\Rest\RestException;
 
 describe('Router', function () {
     beforeEach(function () {
-        $this->instance = new Router();
+        $this->instance = new Router('lol-namespace');
     });
 
     describe('->route', function () {
@@ -81,6 +82,26 @@ describe('Router', function () {
             $routes = $this->instance->routes();
             $result = $routes[0]['args']['callback'](new WP_REST_Request());
             expect($result->lol)->toBe(true);
+        });
+    });
+
+    describe('->listen', function () {
+        it('hooks registering routes to the rest_api_init action if it has not fired', function () {
+            allow('did_action')->toBeCalled()->andReturn(0);
+            expect('add_action')->toBeCalled()->with('rest_api_init');
+            $this->instance->listen();
+        });
+
+        it('throws if called after WordPress has started to resolve the request', function () {
+            allow('add_filter')->toBeCalled()->andRun(function ($_, callable $cb) {
+                $cb(null);
+            });
+            allow('did_action')->toBeCalled()->andReturn(1);
+            $fn = function () {
+                $instance = new Router('lol-namespace');
+                $instance->listen();
+            };
+            expect($fn)->toThrow(new RestException('listen needs to be called before rest requests are served'));
         });
     });
 });
