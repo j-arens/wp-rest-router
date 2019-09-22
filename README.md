@@ -3,7 +3,7 @@ WP Rest Router ![](https://github.com/j-arens/wp-rest-router/workflows/CI/badge.
 
 WP Rest Router is an abstraction around registering custom REST routes in WordPress. It's goal is to simplify and enhance the native WordPress API by providing a similar developer experience from frameworks like [Laravel](https://laravel.com/) and [Express](https://expressjs.com/).
 
-Registering a simple GET route.
+Creating routes is achieved in the same manner as creating routes in most popular frameworks.
 
 ```php
 use Downshift\WordPress\Rest\Router;
@@ -19,6 +19,18 @@ $router->get('my-route', function (WP_REST_Request $req, WP_REST_Response $res) 
   return $res;
 });
 
+// POST
+$router->post('my-route', ...);
+
+// PUT
+$router->put('my-route', ...);
+
+// PATCH
+$router->patch('my-route', ...);
+
+// DELETE
+$router->delete('my-route', ...);
+
 // registers routes with WordPress
 // listen attempts to register routes at the right time
 // so you can skip hooking into the rest_api_init action if you’d like
@@ -26,7 +38,35 @@ $router->get('my-route', function (WP_REST_Request $req, WP_REST_Response $res) 
 $router->listen();
 ```
 
-Similar to how Laravel uses controller classes, routes can be created with a string that's made up of a class name and method name separated by the @ character passed as the callback. The router will take care of instantiating the class and calling the given method under the hood.
+Routes can be scoped or grouped to a specific path by using the `route` method.
+
+```php
+use Downshift\WordPress\Rest\Router;
+
+$router = new Router('my-namespace');
+
+// route will accept a callback as its second argument
+$router->route('foo', function ($scope) {
+  // wp-json/my-namespace/foo/bar
+  $scope->get('bar', ...);
+  // wp-json/my-namespace/foo/baz
+  $scope->get('baz', ...);
+});
+
+// you may also choose to omit providing a callback and simply use the returned scoped router
+$fooScope = $router->route('foo');
+$fooScope->get('bar', ...);
+
+// route may also be used to easily define multiple methods for a single route
+$router->route('foo', function ($scope) {
+  // GET wp-json/my-namespace/foo
+  $scope->get('', ...);
+  // POST wp-json/my-namespace/foo
+  $scope->post('', ...)
+});
+```
+
+Similar to how Laravel uses controller classes, routes can be created with a string that's made up of a class name and method name separated by the @ character passed as the callback. The router will take care of instantiating the class and invoking the given method under the hood.
 
 ```php
 use Downshift\WordPress\Rest\Router;
@@ -115,6 +155,70 @@ $router->setResolver(function (string $classname) {
 // if a resolver function has been provided and invoke it with the name of the class
 // its trying to create, your resolver function should return a new instance of that class
 $router->get('my-route', 'MyController@list');
+```
+
+One of the cooler parts of WP Rest Router is that it makes it easy to define and use Express-like middleware functions. Take note that unlike Express, route callbacks will always be called last after all middleware functions.
+
+```php
+use Downshift\WordPress\Rest\Router;
+
+$router = new Router('my-namespace');
+
+// similar to route callbacks, middleware functions will always be provided with
+// a request and response object, the only difference here is that middleware functions
+// are also provided with a next function as their last argument - just like Express middlewares
+// calling $next() at the end of your middleware allows the chain to continue
+function fooMiddleware(WP_REST_Request $req, WP_REST_Response $res, callable $next)
+{
+  $res->header('x-foo', true);
+  $next();
+}
+
+// you may however choose to conditionally not call $next
+// this will short circuit the chain and prompt the router to return the current
+// response object as-is, skipping any remaining middleware and the route callback
+function barMiddleware(WP_REST_Request $req, WP_REST_Response $res, callable $next)
+{
+  // continue the chain if my-param is truthy
+  if ($req->get_param('my-param')) {
+    $next();
+  }
+  // otherwise stop the chain and return the response as-is
+}
+
+// any callable can be added as a middleware with the use method
+// middleware functions are called in the order that they are added
+$router->use('fooMiddleware');
+$router->use('barMiddleware');
+```
+
+Middleware may also be applied to scoped routes.
+
+```php
+use Downshift\WordPress\Rest\Router;
+
+$router = new Router('my-namespace');
+
+function fooMiddleware(WP_REST_Request $req, WP_REST_Response $res, callable $next)
+{
+  $res->header('x-foo', true);
+  $next();
+}
+
+function barMiddleware(WP_REST_Request $req, WP_REST_Response $res, callable $next)
+{
+  $res->header('x-bar', true);
+  $next();
+}
+
+// apply the foo middleware to all incoming requests
+$router->use('fooMiddleware');
+
+$router->route('scoped-route', function ($scope) {
+  // apply the barMiddleware to all requests within this scope only
+  // middleware applied to all requests will run first
+  $scope->use('barMiddleware');
+});
 ```
 
 # Development
