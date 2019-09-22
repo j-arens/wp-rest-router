@@ -285,6 +285,7 @@ Linting
 
 ```sh
 $ composer lint
+$ composer analyse
 ```
 
 Tests
