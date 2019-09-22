@@ -3,6 +3,10 @@ WP Rest Router ![](https://github.com/j-arens/wp-rest-router/workflows/CI/badge.
 
 WP Rest Router is an abstraction around registering custom REST routes in WordPress. It's goal is to simplify and enhance the native WordPress API by providing a similar developer experience from frameworks like [Laravel](https://laravel.com/) and [Express](https://expressjs.com/).
 
+Requirements
+- PHP >= 7.1
+- WordPress >= 4.7
+
 Creating routes is achieved in the same manner as creating routes in most popular frameworks.
 
 ```php
@@ -221,6 +225,47 @@ $router->route('scoped-route', function ($scope) {
 });
 ```
 
+There are a couple features of the native WordPress API for registering routes that have been transferred over mostly untouched by WP Rest Router, permission callbacks and query parameter schemas.
+
+```php
+use Downshift\WordPress\Rest\Router;
+
+$router = new Router('my-namespace');
+
+// get, post, put, patch, and delete methods return a Route object
+// Routes have two chainable methods, setPermission and setArg
+$router
+  ->get('foo', 'MyController@foo')
+  // set a permission callback on the route
+  // @see https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/#permissions-callback
+  ->setPermission(function () {
+    return current_user_can('edit_others_posts');
+  });
+
+$router
+  ->get('bar', 'MyController@bar')
+  // set query parameter schemas on routes
+  // @see https://developer.wordpress.org/rest-api/extending-the-rest-api/adding-custom-endpoints/#arguments
+  ->setArg('my-param', [
+    'required' => true,
+    'type' => 'integer',
+  ]);
+```
+
+WP Rest Router wraps all of the middlewares and route callbacks in a single try-catch that will convert exceptions into a `WP_Error` object. This allows you to safely throw regular exceptions and get valid responses back on the client.
+
+```php
+use Downshift\WordPress\Rest\Router;
+
+$router = new Router('my-namespace');
+
+$router->get('foo', function (WP_REST_Request $req, WP_REST_Response $res) {
+  // if nothing else catches this exception, wp rest router will catch it
+  // and convert it to a WP_Error object which will be returned to the client by WordPress
+  throw new \Exception('oops!');
+});
+```
+
 # Development
 
 ### Requirements
@@ -229,3 +274,35 @@ $router->route('scoped-route', function ($scope) {
 * docker
 * docker-compose
 * php 7.1
+
+Install dependencies
+
+```sh
+$ composer install
+```
+
+Linting
+
+```sh
+$ composer lint
+```
+
+Tests
+
+```sh
+$ composer test:unit
+```
+
+Integration tests require the WordPress and MySql docker containers to be running
+
+```sh
+$ composer:docker-up
+```
+
+```sh
+$ composer test:integration
+```
+
+### Contributing
+
+All changes need to be have their own branch, pull requests should be concise and limited in scope. Run analyse, lint, test:unit, and test:integration commands before pushing to ensure correctness. CI jobs are run with github actions and are triggered automatically when pushing a commit. PR's cannot be merged until all the tests that run in CI have passed.
