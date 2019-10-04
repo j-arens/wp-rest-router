@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Downshift\WordPress\Rest;
 
@@ -10,27 +12,27 @@ abstract class AbstractRouter implements RouterInterface
     /**
      * @var string
      */
-    const GET = 'GET';
+    public const GET = 'GET';
 
     /**
      * @var string
      */
-    const POST = 'POST';
+    public const POST = 'POST';
 
     /**
      * @var string
      */
-    const PUT = 'PUT';
+    public const PUT = 'PUT';
 
     /**
      * @var string
      */
-    const PATCH = 'PATCH';
+    public const PATCH = 'PATCH';
 
     /**
      * @var string
      */
-    const DELETE = 'DELETE';
+    public const DELETE = 'DELETE';
 
     /**
      * @var array
