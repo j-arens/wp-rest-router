@@ -1,12 +1,14 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Downshift\WordPress\Rest;
 
-use \Exception;
-use \Closure;
-use \WP_REST_Request;
-use \WP_REST_Response;
-use \WP_Error;
+use Exception;
+use Closure;
+use WP_REST_Request;
+use WP_REST_Response;
+use WP_Error;
 
 trait CallbackWrappers
 {

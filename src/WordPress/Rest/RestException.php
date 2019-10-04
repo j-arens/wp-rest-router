@@ -1,8 +1,10 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Downshift\WordPress\Rest;
 
-use \Exception;
+use Exception;
 
 class RestException extends Exception
 {

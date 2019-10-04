@@ -1,10 +1,12 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace Downshift\WordPress\Rest;
 
-use \Closure;
-use \WP_REST_Request;
-use \WP_REST_Response;
+use Closure;
+use WP_REST_Request;
+use WP_REST_Response;
 
 class MiddlewareStack implements MiddlewareStackInterface
 {
