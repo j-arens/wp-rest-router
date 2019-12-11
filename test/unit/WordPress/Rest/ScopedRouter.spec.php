@@ -1,6 +1,6 @@
 <?php
 
-use Downshift\WordPress\Rest\ScopedRouter;
+use O\WordPress\Rest\ScopedRouter;
 
 describe('ScopedRouter', function () {
     beforeEach(function () {

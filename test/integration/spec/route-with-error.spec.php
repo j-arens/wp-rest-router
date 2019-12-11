@@ -11,7 +11,7 @@ describe('route with error', function () {
         $data = json_decode($res->getBody()->getContents(), true);
         expect($data)->toBeA('array');
         expect($data['message'])->toBe('caught error while handling REST request');
-        expect($data['data']['type'])->toBe('Downshift\WordPress\Rest\RestException');
+        expect($data['data']['type'])->toBe('O\WordPress\Rest\RestException');
         expect($data['data']['message'])->toBe('error');
         expect($data['data']['data']['foo'])->toBe(true);
         expect($data['data']['data']['bar'])->toBe(false);

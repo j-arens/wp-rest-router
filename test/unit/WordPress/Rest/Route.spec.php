@@ -1,7 +1,7 @@
 <?php
 
-use Downshift\WordPress\Rest\Route;
-use Downshift\WordPress\Rest\RestException;
+use O\WordPress\Rest\Route;
+use O\WordPress\Rest\RestException;
 
 describe('Route', function () {
     describe('->setArg', function () {

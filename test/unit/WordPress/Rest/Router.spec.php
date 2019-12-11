@@ -1,8 +1,8 @@
 <?php
 
-use Downshift\WordPress\Rest\Router;
-use Downshift\WordPress\Rest\ScopedRouter;
-use Downshift\WordPress\Rest\RestException;
+use O\WordPress\Rest\Router;
+use O\WordPress\Rest\ScopedRouter;
+use O\WordPress\Rest\RestException;
 
 describe('Router', function () {
     beforeEach(function () {
@@ -12,7 +12,7 @@ describe('Router', function () {
     describe('->route', function () {
         it('creates and returns a scoped router object', function () {
             $result = $this->instance->route('lol');
-            expect($result)->toBeAnInstanceOf('Downshift\WordPress\Rest\ScopedRouter');
+            expect($result)->toBeAnInstanceOf('O\WordPress\Rest\ScopedRouter');
         });
 
         it('sets a resolver on the scoped router if one has been provided', function () {
