@@ -10,7 +10,7 @@ Requirements
 Creating routes is achieved in the same manner as creating routes in most popular frameworks.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 // create a new router, you'll need to provide it a namespace to use when registering routes with WordPress
 // @see https://developer.wordpress.org/reference/functions/register_rest_route/#parameters
@@ -45,7 +45,7 @@ $router->listen();
 Routes can be scoped or grouped to a specific path by using the `route` method.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 $router = new Router('my-namespace');
 
@@ -73,7 +73,7 @@ $router->route('foo', function ($scope) {
 Similar to how Laravel uses controller classes, routes can be created with a string that's made up of a class name and method name separated by the @ character passed as the callback. The router will take care of instantiating the class and invoking the given method under the hood.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 class MyController
 {
@@ -102,7 +102,7 @@ $router->get('my-route', 'MyNamespace\Controllers\MyController@list');
 Take note that the router doesn't know how to resolve constructor parameters on controller classes. If you find yourself in this situation or are using a dependency injection container then you'll need to provide the router with a resolver function.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 class SomeRepository
 {
@@ -164,7 +164,7 @@ $router->get('my-route', 'MyController@list');
 One of the cooler parts of WP Rest Router is that it makes it easy to define and use Express-like middleware functions. Take note that unlike Express, route callbacks will always be called last after all middleware functions.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 $router = new Router('my-namespace');
 
@@ -199,7 +199,7 @@ $router->use('barMiddleware');
 Middleware may also be applied to scoped routes.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 $router = new Router('my-namespace');
 
@@ -228,7 +228,7 @@ $router->route('scoped-route', function ($scope) {
 There are a couple features of the native WordPress API for registering routes that have been transferred over mostly untouched by WP Rest Router, permission callbacks and query parameter schemas.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 $router = new Router('my-namespace');
 
@@ -255,7 +255,7 @@ $router
 WP Rest Router wraps all of the middlewares and route callbacks in a single try-catch that will convert exceptions into a `WP_Error` object. This allows you to safely throw regular exceptions and get valid responses back on the client.
 
 ```php
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 $router = new Router('my-namespace');
 
@@ -306,4 +306,4 @@ $ composer test:integration
 
 ### Contributing
 
-All changes need to be have their own branch, pull requests should be concise and limited in scope. Run analyse, lint, test:unit, and test:integration commands before pushing to ensure correctness. CI jobs are run with github actions and are triggered automatically when pushing a commit. PR's cannot be merged until all the tests that run in CI have passed.
+All changes need to be have their own branch, pull requests should be concise and limited in scope. CI jobs are run with github actions and are triggered automatically when pushing a commit. PR's cannot be merged until all the tests that run in CI have passed and have been approved.
