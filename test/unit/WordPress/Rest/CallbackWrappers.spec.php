@@ -1,11 +1,11 @@
 <?php
 
 use Kahlan\Plugin\Double;
-use Downshift\WordPress\Rest\CallbackWrappers;
+use O\WordPress\Rest\CallbackWrappers;
 
 describe('CallbackWrappers', function () {
     beforeEach(function () {
-        $dbl = Double::instance(['uses' => 'Downshift\WordPress\Rest\CallbackWrappers']);
+        $dbl = Double::instance(['uses' => 'O\WordPress\Rest\CallbackWrappers']);
         $this->instance = new $dbl();
 
         // ya, i know this is gross ¯\_(ツ)_/¯

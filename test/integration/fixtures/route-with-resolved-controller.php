@@ -1,6 +1,6 @@
 <?php
 
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 class Foo
 {

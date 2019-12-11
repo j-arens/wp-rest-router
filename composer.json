@@ -1,5 +1,5 @@
 {
-  "name": "downshiftorg/wp-rest-router",
+  "name": "o/wp-rest-router",
   "type": "library",
   "authors": [
     {
@@ -9,7 +9,7 @@
   ],
   "autoload": {
     "psr-4": {
-      "Downshift\\": "./src"
+      "O\\": "./src"
     }
   },
   "scripts": {

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Downshift\WordPress\Rest;
+namespace O\WordPress\Rest;
 
 use Closure;
 use WP_REST_Request;

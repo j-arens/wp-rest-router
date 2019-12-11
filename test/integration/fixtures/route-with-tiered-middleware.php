@@ -1,7 +1,7 @@
 <?php
 
-use Downshift\WordPress\Rest\Router;
-use Downshift\WordPress\Rest\ScopedRouter;
+use O\WordPress\Rest\Router;
+use O\WordPress\Rest\ScopedRouter;
 
 $router = new Router('wp-rest-router');
 $router->use(function (WP_REST_Request $req, WP_REST_Response $res, callable $next) {

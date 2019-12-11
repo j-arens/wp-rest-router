@@ -1,6 +1,6 @@
 <?php
 
-use Downshift\WordPress\Rest\Router;
+use O\WordPress\Rest\Router;
 
 function get(WP_REST_Request $req, WP_REST_Response $res)
 {
